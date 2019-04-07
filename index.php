@@ -1,3 +1,10 @@
+<!--
+Name: Alicia Buehner
+Date: 04.06.2019
+URL: http://www.abuehner.greenriverdev.com/it328/cupcakes/
+Description: This program generates and processes a cupcake order form given valid inputs
+             and generates an order summary with the order total.
+-->
 <!doctype html>
 <html lang="en">
 <head>
@@ -23,7 +30,7 @@
             </div>
             <div class="mb-3">
                 <label>Cupcake flavors:</label>
-                    <?php
+                <?php
                     //declare an associative array to define values and labels for the cupcake flavors checkboxes
                     $flavors = array(
                         "grasshopper" => "The Grasshopper",
@@ -45,14 +52,13 @@
                             echo '>';
                         echo '<label class="form-check-label" for="' . $key . '">' . $value . '</label></div>';
                     }
-                    ?>
+                ?>
             </div>
             <div>
                 <button type="submit" value="Submit" class="btn btn-primary">Order</button>
             </div>
         </form>
     </div>
-
     <?php //start of form validation and order confirmation
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -61,6 +67,8 @@
             //check for name input
             if (empty($_POST['name'])) {
                 $errors[] = 'Please include a name for your cupcake order.';
+            } else {
+                $name = trim($_POST['name']);
             }
 
             //check that at least one cupcake flavor has been selected
@@ -77,8 +85,20 @@
                 }
             }
 
+            //process order form confirmation if there are no errors
             if (empty($errors)) {
-                //TODO: process order form confirmation
+                echo "<div class='ml-3 mt-3'><p>Thank you, " . $name . ", for your order!</p><p>Order Summary:</p><ul>";
+
+                //display selected cupcakes for the order
+                foreach ($_POST['flavor'] as $value) {
+                    echo "<li>" . $flavors[$value] ."</li>";
+                }
+                echo "</ul>";
+
+                //calculate the order total & display to formatted result
+                $num = count($_POST['flavor']);
+                $total = number_format($num * 3.50, 2);
+                echo "<p>Order Total: $" . $total . "</p>";
             } else {
                 //print the errors
                 echo '<div class="ml-3 mt-3"><p>The following error(s) occurred:<br>';
@@ -89,7 +109,6 @@
             }
         }
     ?>
-
     <!-- Bootstrap scripts -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
             integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
